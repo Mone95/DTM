@@ -31,10 +31,16 @@ public class State {
         return this.isAcceptingState;
     }
     
-    List<Transition> getTransitions (char symbol) {
+    List<Transition> getTransitionsOfInputSymbol (char symbol) {
         if (symbol < TuringMachine.FIRST_CHAR || symbol > TuringMachine.LAST_CHAR) {
             throw new IllegalArgumentException ("A symbol that is not in the Alphabet has been given to the Input Tape");
         }
         return outgoingTransitions.get(symbol - TuringMachine.FIRST_CHAR);
+    }
+    
+    @Override
+    public String toString () {
+        StringBuilder StateAsString = new StringBuilder ();
+        
     }
 }
