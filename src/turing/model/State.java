@@ -8,7 +8,7 @@ public class State {
     private final int numberOfState;
     private final boolean isStoppingState;
     private final boolean isAcceptingState;
-    private Collection<List<Transition>> outgoingTransitions = new ArrayList<List<Transition>>(DTM.ALPHABET_LENGTH);
+    private List<List<Transition>> outgoingTransitions = new ArrayList<List<Transition>>(DTM.ALPHABET_LENGTH);
     
     public State (int numberOfState, boolean isStoppingState, boolean isAcceptingState) {
         this.numberOfState = numberOfState;
@@ -19,7 +19,22 @@ public class State {
         }
     }
     
-    public int getNumberOfState () {
+    int getNumberOfState () {
         return this.numberOfState;
+    }
+    
+    boolean isStoppingState () {
+        return this.isStoppingState;
+    }
+    
+    boolean isAcceptingState () {
+        return this.isAcceptingState;
+    }
+    
+    List<Transition> getTransitions (char symbol) {
+        if (symbol < TuringMachine.FIRST_CHAR || symbol > TuringMachine.LAST_CHAR) {
+            throw new IllegalArgumentException ("A symbol that is not in the Alphabet has been given to the Input Tape");
+        }
+        return outgoingTransitions.get(symbol - TuringMachine.FIRST_CHAR);
     }
 }

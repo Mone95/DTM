@@ -3,7 +3,7 @@ package turing.model;
 public class DTM implements TuringMachine {
     public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR;
     private State[] states;
-    private 
+    private State currentState;
     
     @Override
     public String simulate(String input) {
