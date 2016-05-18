@@ -16,11 +16,13 @@ public class WorkingTape extends Tape {
         if (this.positionPointer < 0) {
             this.content.add(0, newSymbol);
             this.positionPointer = 0;
+            this.moveHead(direction);
             return TuringMachine.BLANK_CHAR;
         }
-        if (this.positionPointer >= this.content.size()) {
+        int contentSize = this.content.size();
+        if (this.positionPointer >= contentSize) {
             this.content.add(newSymbol);
-            this.positionPointer = this.content.size() - 1;
+            this.moveHead(direction);
             return TuringMachine.BLANK_CHAR;
         }
         char readSymbol = this.content.get(this.positionPointer);

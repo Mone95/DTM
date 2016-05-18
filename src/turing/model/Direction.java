@@ -2,8 +2,8 @@ package turing.model;
 
 public enum Direction {
     LEFT, NOMOVE, RIGHT;
-    
-    int compareDirections (Direction otherDirection) {
+
+    int compareDirections(Direction otherDirection) {
         switch (this) {
         case LEFT:
             if ((Direction) otherDirection == LEFT) {
@@ -27,9 +27,9 @@ public enum Direction {
             return 0;
         }
     }
-    
+
     @Override
-    public String toString () {
+    public String toString() {
         if (this == LEFT) {
             return "-1";
         }
