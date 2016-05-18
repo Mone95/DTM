@@ -1,24 +1,23 @@
 package turing.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class State {
     private final int numberOfState;
-    private final boolean isStoppingState;
-    private final boolean isAcceptingState;
-    private List<List<Transition>> outgoingTransitions =
-            new ArrayList<List<Transition>>(DTM.ALPHABET_LENGTH);
+    private final boolean isStopping;
+    private final boolean isAccepting;
+    private List<List<Command>> outgoingCommands =
+            new ArrayList<List<Command>>(DTM.ALPHABET_LENGTH);
 
     public State(int numberOfState, boolean isStoppingState,
             boolean isAcceptingState) {
         this.numberOfState = numberOfState;
-        this.isStoppingState = isStoppingState;
-        this.isAcceptingState = isAcceptingState;
+        this.isStopping = isStoppingState;
+        this.isAccepting = isAcceptingState;
         for (int i = 0; i < DTM.ALPHABET_LENGTH; i++) {
-            outgoingTransitions.add(new ArrayList<Transition>());
+            outgoingCommands.add(new ArrayList<Command>());
         }
     }
 
@@ -27,32 +26,32 @@ public class State {
     }
 
     boolean isStoppingState() {
-        return this.isStoppingState;
+        return this.isStopping;
     }
 
     boolean isAcceptingState() {
-        return this.isAcceptingState;
+        return this.isAccepting;
     }
 
-    private List<Transition> getTransitionsOfInputSymbol(char symbol) {
+    private List<Command> getCommandsOfInputSymbol(char symbol) {
         if (symbol < TuringMachine.FIRST_CHAR
                 || symbol > TuringMachine.LAST_CHAR) {
             throw new IllegalArgumentException(
                     "A symbol that is not in the Alphabet has been given to "
                             + "the Input Tape");
         }
-        return outgoingTransitions.get(symbol - TuringMachine.FIRST_CHAR);
+        return outgoingCommands.get(symbol - TuringMachine.FIRST_CHAR);
     }
 
     @Override
     public String toString() {
-        for (List<Transition> transitions : this.outgoingTransitions) {
-            Collections.sort(transitions);
+        for (List<Command> commands : this.outgoingCommands) {
+            Collections.sort(commands);
         }
         StringBuilder stateAsString = new StringBuilder();
-        for (List<Transition> transitions : outgoingTransitions) {
-            for (Transition transition : transitions) {
-                stateAsString.append(transition);
+        for (List<Command> commands : outgoingCommands) {
+            for (Command command : commands) {
+                stateAsString.append(command);
                 stateAsString.append("\n");
             }
         }

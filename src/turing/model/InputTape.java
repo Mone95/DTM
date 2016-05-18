@@ -12,15 +12,9 @@ public class InputTape extends Tape {
         }
     }
 
-    char turingRead(Direction direction) {
-        if (this.positionPointer < 0
-                || this.positionPointer >= this.content.size()) {
-            this.moveHead(direction);
-            return TuringMachine.BLANK_CHAR;
-        } else {
-            char readSymbol = this.content.get(this.positionPointer);
-            this.moveHead(direction);
-            return readSymbol;
-        }
+    char turingStep(Direction direction) {
+        char result = this.read();
+        this.moveHead(direction);
+        return result;
     }
 }

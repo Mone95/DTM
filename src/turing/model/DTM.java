@@ -4,6 +4,7 @@ import java.util.Set;
 
 public class DTM implements TuringMachine {
     public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR;
+    private State startingState;
     private State[] states;
     private Tape[] tapes;
     private State currentState;
@@ -17,7 +18,21 @@ public class DTM implements TuringMachine {
     
     public DTM(int numberOfStates, int numberOfTapes, int startStateId,
             Set<Integer> stopStateIds, Set<Integer> acceptStateIds) {
-        // TODO Auto-generated constructor stub
+        states = new State[numberOfStates];
+        for (int i = 0; i < numberOfStates; i++) {
+            if (stopStateIds.contains(new Integer(i))) {
+                if (acceptStateIds.contains(new Integer(i))) {
+                    states[i] = new State (i, true, true);
+                }
+                else {
+                    states[i] = new State (i, true, false);
+                }
+            }
+            else {
+            states[i] = new State(i, false, false);
+            }
+        }
+        startingState = states[startStateId];
     }
 
     @Override
