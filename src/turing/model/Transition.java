@@ -32,14 +32,6 @@ public class Transition implements Comparable<Transition> {
 
     @Override
     public int compareTo(Transition otherTransition) {
-        if (this.source.getNumberOfState() < otherTransition.source
-                .getNumberOfState()) {
-            return -1;
-        }
-        if (this.source.getNumberOfState() > otherTransition.source
-                .getNumberOfState()) {
-            return 1;
-        }
         if (this.target.getNumberOfState() < otherTransition.source
                 .getNumberOfState()) {
             return -1;
