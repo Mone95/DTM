@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class WorkingTape extends Tape {
 
     public WorkingTape(String content) {
+        this.positionPointer = 0;
         this.content = new ArrayList<Character>();
         for (int i = 0; i < content.length(); i++) {
             this.content.add(content.charAt(i));
