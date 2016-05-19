@@ -1,16 +1,29 @@
 package turing.utility;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.util.Scanner;
+
+import turing.model.TuringMachine;
+
 public final class Shell {
     /**
-     * The automaton the Shell currently works with.
+     * The Turing Machine the Shell currently works with.
      */
-    private static LambdaNFA automaton = null;
+    private static TuringMachine turingMachine = null;
 
     private static void error(String errorInformation) {
         System.out.println("Error! " + errorInformation);
     }
 
-    private Shell() { }
+    private Shell() {
+        throw new UnsupportedOperationException(
+                "Illegal call of utility class constructor.");
+    }
     
     /**
      * Initializes a new automaton if the command was given correctly. Returns
@@ -20,175 +33,92 @@ public final class Shell {
      * @return Returns whether the Initialization has worked or not.
      * @throws IOException
      */
-    private static boolean initAutomaton(Scanner scanner) throws IOException {
-        if (scanner.hasNextInt()) {
-            int sizeOfAutomaton = scanner.nextInt();
-            if (!scanner.hasNext() && sizeOfAutomaton > 0) {
-                Shell.automaton = new LambdaNFA(sizeOfAutomaton,
-                        new int[] {sizeOfAutomaton});
+    private static boolean readDTMFromFile(Scanner scanner) throws IOException {
+        if (scanner.hasNext()) {
+            String fileName = scanner.next();
+            if (!scanner.hasNext()) {
+                File file = new File (fileName);
+                try {
+                    Shell.turingMachine = 
+                            TuringMachineFactory.loadFromFile(file);
+                } catch (FileNotFoundException e) {
+                    error ("Ungültiger Dateiname oder -pfad!");
+                    return true;
+                } catch (ParseException e) {
+                    error ("Ungültiges Dateiformat!");
+                    return true;
+                }
                 return false;
-            }
+            }    
         }
-        error("Falsches Parameterformat! Nach INIT die Anzahl der Zustände "
-                + "des Automaten eingeben.");
+        error("Falsches Parameterformat! Nach INPUT nur den Namen der Datei, "
+                + "die die Turing Maschine beschreibt, angeben!");
         return true;
     }
     
     /**
-     * Checks if a transition the user wants to add to the automaton is valid 
-     * and adds it if possible.
-     * 
-     * @param scanner Contains the instructions of the user.
-     * @param noAutomaton Tells whether an automaton is initialized or not.
-     * @throws IOException
-     */
-    private static void addTransition(Scanner scanner, boolean noAutomaton)
-            throws IOException {
-        int firstState = 0;
-        int secondState = 0;
-        char symbol = '.';
-        String wrongParameters = "Falsches Parameterformat! ADD Zustand Zustand"
-                + " Zeichen des Formats [" + Automaton.FIRST_SYMBOL + "-"
-                + Automaton.LAST_SYMBOL + "] oder " + LambdaNFA.LAMBDA
-                + " benötigt.";
-        if (noAutomaton) {
-            error("Es wurde noch kein Automat initialisiert!");
-            return;
-        }
-        if (scanner.hasNextInt()) {
-            firstState = scanner.nextInt();
-        } else {
-            error(wrongParameters);
-            return;
-        }
-        if (scanner.hasNextInt()) {
-            secondState = scanner.nextInt();
-        } else {
-            error(wrongParameters);
-            return;
-        }
-        if (scanner.hasNext()) {
-            String inputString = scanner.next();
-            if ((inputString.length() == 1) && !(scanner.hasNext())) {
-                symbol = inputString.charAt(0);
-                if (automaton.isValidTransition(firstState, secondState,
-                        symbol)) {
-                    automaton.addTransition(firstState, secondState, symbol);
-                    return;
-                }
-            }
-        }
-        error(wrongParameters);
-    }
-    
-    /**
-     * Writes to the console whether the command is incorrect, the checked 
+     * Writes to the console whether the command is incorrect or the checked 
      * word is within the language or not.
      * 
      * @param scanner Contains the instructions given by the user
-     * @param noAutomaton Tells whether an automaton is initialized or not.
+     * @param noTuringMachine Tells whether a DTM is initialized or not.
      * @throws IOException
      */
-    private static void isElement(Scanner scanner, boolean noAutomaton)
+    private static void checkWord(Scanner scanner, boolean noTuringMachine)
             throws IOException {
-        if (noAutomaton) {
-            error("Es wurde noch kein Automat initialisiert!");
+        if (noTuringMachine) {
+            error("Es wurde noch keine Turing Maschine initialisiert!");
             return;
         }
+        String word = "";
         if (scanner.hasNext()) {
-            if (scanner.hasNext()) {
-                String word = scanner.next();
-                if (word.equals("\"\"")) {
-                    word = "";
-                } else if ((word.charAt(0) == '"')
-                        && (word.charAt(word.length() - 1) == '"')) {
-                    word = word.substring(1, word.length() - 1);
-                } else {
-                    error("Falsches Format: CHECK \"Zu überprüfendes Wort\" "
-                            + "erwartet!");
-                    return;
-                }
-                if (!scanner.hasNext()) {
-                    if (automaton.isElement(word)) {
-                        System.out.println("In language.");
-                        return;
-                    } else {
-                        System.out.println("Not in language.");
-                        return;
-                    }
-                }
-            }
+            word = scanner.next();
         }
-        error("Falsches Format: CHECK \"Zu überprüfendes Wort\" erwartet!");
+        if (scanner.hasNext()) {
+            error ("Falsches Parameterformat! CHECK Wort erwartet!");
+            return;
+        }
+        if (turingMachine.check(word)) {
+            System.out.println("accept");
+        } else {
+            System.out.println("reject");
+        }
     }
 
     /**
-     * Writes the longest prefix of the word the automaton would still accept
-     * to the console.
+     * Writes the content of the working tape to the console.
      * 
      * @param scanner Contains the instructions given by the user
-     * @param noAutomaton Tells whether an automaton is initialized or not.
+     * @param noTuringMachine Tells whether a DTM is initialized or not.
      * @throws IOException
      */
-    private static void longestPrefix(Scanner scanner, boolean noAutomaton)
+    private static void run(Scanner scanner, boolean noTuringMachine)
             throws IOException {
-        if (noAutomaton) {
-            error("Es wurde noch kein Automat initialisiert!");
+        if (noTuringMachine) {
+            error("Es wurde noch keine Turing Maschine initialisiert!");
             return;
         }
+        String word = "";
         if (scanner.hasNext()) {
-            if (scanner.hasNext()) {
-                String word = scanner.next();
-                if (word.equals("\"\"")) {
-                    word = "";
-                } else if ((word.charAt(0) == '"')
-                        && (word.charAt(word.length() - 1) == '"')) {
-                    word = word.substring(1, word.length() - 1);
-                } else {
-                    error("Falsches Format: PREFIX \"Zu überprüfendes Wort\" "
-                            + "erwartet!");
-                    return;
-                }
-                if (!scanner.hasNext()) {
-                    String prefix = automaton.longestPrefix(word);
-                    if (prefix == null) {
-                        System.out.println("No prefix in language.");
-                    } else {
-                        System.out.println(
-                                "\"" + automaton.longestPrefix(word) + "\"");
-                    }
-                    return;
-                }
-            }
+            word = scanner.next();
         }
-        error("Falsches Format: PREFIX \"Zu überprüfendes Wort\" erwartet!");
-    }
-
-    private static boolean generateAutomaton() {
-        automaton = new LambdaNFA(5, new int[] {5});
-        automaton.addTransition(1, 2, 'a');
-        automaton.addTransition(2, 3, 'a');
-        automaton.addTransition(3, 4, 'a');
-        automaton.addTransition(4, 5, 'a');
-        automaton.addTransition(2, 2, 'a');
-        automaton.addTransition(2, 3, '~');
-        automaton.addTransition(1, 4, '~');
-        automaton.addTransition(1, 3, 'b');
-        automaton.addTransition(3, 4, 'b');
-        automaton.addTransition(4, 5, 'b');
-        return false;
+        if (scanner.hasNext()) {
+                error("Falsches Format! SIMULATE Wort erwartet!");
+                return;
+        }
+        System.out.println(turingMachine.simulate(word));
     }
 
     /**
-     * Prints a String representation of the automaton on the console.
+     * Prints a String representation of the Turing Machine on the console.
      * 
-     * @param noAutomaton Tells whether an automaton is initialized or not.
+     * @param noTuringMachine Tells whether a DTM is initialized or not.
      */
-    private static void displayAutomaton(boolean noAutomaton) {
-        if (noAutomaton) {
-            error("Es wurde noch kein Automat initialisiert!");
+    private static void printTuringMachine(boolean noTuringMachine) {
+        if (noTuringMachine) {
+            error("Es wurde noch keine Turing Maschine initialisiert!");
         } else {
-            System.out.print(Shell.automaton);
+            System.out.print(Shell.turingMachine);
         }
     }
 
@@ -214,7 +144,7 @@ public final class Shell {
                 + "in den Automaten ein, der vom Zustand mit der "
                 + "Nummer Zahl1 in den Zustand mit der Nummer Zahl2 "
                 + "mit dem angegebenen Zeichen übergeht. Für "
-                + "Spontanübergänge " + LambdaNFA.LAMBDA
+                + "Spontanübergänge "
                 + " benutzen. Möchte man eine bereits vorhandene Kante"
                 + " einfügen, so wird der Automat nicht verändert.");
         System.out.println("CHECK \"Wort\" | Gibt an, ob das in "
@@ -247,31 +177,26 @@ public final class Shell {
      */
     private static void execute(BufferedReader reader) throws IOException {
         boolean continueInput = true;
-        boolean hasNoAutomaton = true;
+        boolean hasNoTuringMachine = true;
         while (continueInput) {
-            System.out.print("nfa> ");
+            System.out.print("dtm> ");
             Scanner instructionScanner = new Scanner(reader.readLine());
             if (instructionScanner.hasNext()) {
                 String command = instructionScanner.next();
                 char instructor = command.toUpperCase().charAt(0);
                 switch (instructor) {
                 case 'I':
-                    hasNoAutomaton = initAutomaton(instructionScanner);
-                    break;
-                case 'A':
-                    addTransition(instructionScanner, hasNoAutomaton);
+                    hasNoTuringMachine = 
+                                    Shell.readDTMFromFile(instructionScanner);
                     break;
                 case 'C':
-                    isElement(instructionScanner, hasNoAutomaton);
+                    Shell.checkWord(instructionScanner, hasNoTuringMachine);
+                    break;
+                case 'R':
+                    Shell.run(instructionScanner, hasNoTuringMachine);
                     break;
                 case 'P':
-                    longestPrefix(instructionScanner, hasNoAutomaton);
-                    break;
-                case 'G':
-                    hasNoAutomaton = generateAutomaton();
-                    break;
-                case 'D':
-                    displayAutomaton(hasNoAutomaton);
+                    Shell.printTuringMachine(hasNoTuringMachine);
                     break;
                 case 'H':
                     help();

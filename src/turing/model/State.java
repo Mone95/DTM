@@ -42,6 +42,14 @@ public class State {
         }
         return outgoingCommands.get(symbol - TuringMachine.FIRST_CHAR);
     }
+    
+    void addCommand (State target, char inputChar, Direction inputHeadDirection, char[] commandChars, char[] newChars, Direction[] directions) {
+        Command newCommand = new Command(this, target, inputChar, inputHeadDirection, commandChars, newChars, directions);
+        List<Command> commandList = outgoingCommands.get(inputChar - TuringMachine.FIRST_CHAR);
+        if (!commandList.contains(newCommand)) {
+            commandList.add(newCommand);
+        }
+    }
 
     @Override
     public String toString() {

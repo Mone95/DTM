@@ -3,31 +3,41 @@ package turing.model;
 public class Command implements Comparable<Command> {
     private State source;
     private State target;
+    private char inputChar;
+    private Direction inputHeadDirection;
     private char[] commandChars;
-    private Direction[] directions;
+    private char[] newChars;
+    private Direction[] headDirections;
 
-    public Command(State source, State target, char[] commandChars,
-            Direction[] directions) {
-        if (commandChars.length != directions.length) {
+    public Command(State source, State target, char inputChar, Direction inputHeadDirection,
+            char[] commandChars, char[] newChars, Direction[] headDirections) {
+        if (newChars.length != headDirections.length) {
             throw new IllegalArgumentException("The number of characters must"
-                    + "match the number of directions in a command!");
+                    + "match the number of headDirections in a command!");
         }
         this.source = source;
         this.target = target;
+        this.inputChar = inputChar;
+        this.inputHeadDirection = inputHeadDirection;
         this.commandChars = commandChars;
-        this.directions = directions;
+        this.newChars = newChars;
+        this.headDirections = headDirections;
     }
 
     State getTarget() {
         return this.target;
     }
-
-    char[] getCommandChars() {
-        return this.commandChars;
+    
+    Direction getInputHeadDirection() {
+        return this.inputHeadDirection;
     }
 
-    Direction[] getDirections() {
-        return this.directions;
+    char[] getNewChars() {
+        return this.newChars;
+    }
+
+    Direction[] getHeadDirections() {
+        return this.headDirections;
     }
 
     @Override
@@ -48,12 +58,10 @@ public class Command implements Comparable<Command> {
             if (this.commandChars[i] > otherCommand.commandChars[i]) {
                 return 1;
             }
-            if (this.directions[i]
-                    .compareTo(otherCommand.directions[i]) < 0) {
+            if (this.headDirections[i].compareTo(otherCommand.headDirections[i]) < 0) {
                 return -1;
             }
-            if (this.directions[i]
-                    .compareTo(otherCommand.directions[i]) > 0) {
+            if (this.headDirections[i].compareTo(otherCommand.headDirections[i]) > 0) {
                 return 1;
             }
         }
@@ -66,34 +74,41 @@ public class Command implements Comparable<Command> {
         transitionString.append(this.source.getNumberOfState());
         transitionString.append(" ");
         transitionString.append(this.target.getNumberOfState());
-        for (int i = 0; i < this.commandChars.length; i++) {
+        transitionString.append(" ");
+        transitionString.append(inputChar);
+        for (char c : commandChars) {
+            transitionString.append(" ");
+            transitionString.append(c);
+        }
+        for (int i = 0; i < this.newChars.length; i++) {
             transitionString.append(" ");
             transitionString.append(this.commandChars[i]);
             transitionString.append(" ");
-            transitionString.append(this.directions[i]);
+            transitionString.append(this.headDirections[i]);
         }
         return transitionString.toString();
     }
-    
-    @Override 
-    public boolean equals (Object other) {
+
+    @Override
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         } else if (other instanceof Command) {
             Command otherCommand = (Command) other;
-            return (this.source == otherCommand.source && this.target == otherCommand.target && this.commandChars.equals(otherCommand.commandChars) && this.directions.equals(otherCommand.directions));
-            } 
-        else { 
+            return (this.source == otherCommand.source
+                    && this.inputChar == otherCommand.inputChar
+                    && this.commandChars.equals(otherCommand.commandChars));
+        } else {
             return false;
         }
     }
-    
+
     @Override
-    public int hashCode () {
+    public int hashCode() {
         StringBuilder b = new StringBuilder(this.source.toString());
         for (char c : this.commandChars) {
             b.append("," + c);
         }
         return b.toString().hashCode();
-   }
+    }
 }

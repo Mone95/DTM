@@ -43,7 +43,7 @@ public class Tape {
 
     @Override
     public String toString() {
-        StringBuilder TapeContent = new StringBuilder();
+        StringBuilder TapeContent = new StringBuilder("");
         for (Character symbol : content) {
             TapeContent.append(symbol);
         }

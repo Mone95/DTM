@@ -3,18 +3,12 @@ package turing.model;
 import java.util.Set;
 
 public class DTM implements TuringMachine {
-    public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR;
+    public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR + 1;
     private State startingState;
     private State[] states;
     private Tape[] tapes;
     private State currentState;
-    
-    public static boolean isValidTapeChar(char symbol) {
-        if (symbol >= TuringMachine.FIRST_CHAR && symbol <= TuringMachine.LAST_CHAR || symbol == TuringMachine.BLANK_CHAR) {
-            return true;
-        }
-        return false;
-    }
+
     
     public DTM(int numberOfStates, int numberOfTapes, int startStateId,
             Set<Integer> stopStateIds, Set<Integer> acceptStateIds) {
@@ -34,13 +28,53 @@ public class DTM implements TuringMachine {
         }
         startingState = states[startStateId];
     }
-
+    
+    public static boolean isValidTapeChar(char symbol) {
+        if (symbol >= TuringMachine.FIRST_CHAR && symbol <= TuringMachine.LAST_CHAR || symbol == TuringMachine.BLANK_CHAR) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean isValidCommmand (int sourceState, char inputTapeChar,
+            char[] tapeChars, int targetState, Direction inputTapeHeadMove,
+            char[] newTapeChars, Direction[] tapeHeadMoves) {
+        if (sourceState < 0 || sourceState >= states.length || targetState < 0 || targetState >= states.length) {
+            return false;
+        }
+        if (!DTM.isValidTapeChar(inputTapeChar)) {
+            return false;
+        }
+        for (char tapeChar : tapeChars) {
+            if (!DTM.isValidTapeChar(tapeChar)) {
+                return false;
+            }
+        }
+        for (char newTapeChar : newTapeChars) {
+            if(!DTM.isValidTapeChar(newTapeChar)) {
+                return false;
+            }
+        }
+        if (!(tapeChars.length == newTapeChars.length)) {
+            return false;
+        }
+        if (!(tapeChars.length == tapeHeadMoves.length)) {
+            return false;
+        }
+        if(!(tapeChars.length == tapes.length)) {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public void addCommand(int sourceState, char inputTapeChar,
             char[] tapeChars, int targetState, Direction inputTapeHeadMove,
             char[] newTapeChars, Direction[] tapeHeadMoves) {
-        // TODO Auto-generated method stub
-        
+        if (!this.isValidCommmand(sourceState, inputTapeChar, tapeChars, targetState, inputTapeHeadMove, newTapeChars, tapeHeadMoves)) {
+            throw new IllegalArgumentException("Tried to add an invalid command!");
+        }
+        states[sourceState].addCommand(states[targetState], inputTapeChar, inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);
     }
     
     @Override
