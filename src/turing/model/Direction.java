@@ -6,20 +6,20 @@ public enum Direction {
     int compareDirections(Direction otherDirection) {
         switch (this) {
         case LEFT:
-            if ((Direction) otherDirection == LEFT) {
+            if (otherDirection == LEFT) {
                 return 0;
             }
             return -1;
         case NOMOVE:
-            if ((Direction) otherDirection == LEFT) {
+            if (otherDirection == LEFT) {
                 return 1;
             }
-            if ((Direction) otherDirection == RIGHT) {
+            if (otherDirection == RIGHT) {
                 return -1;
             }
             return 0;
         case RIGHT:
-            if ((Direction) otherDirection == RIGHT) {
+            if (otherDirection == RIGHT) {
                 return 0;
             }
             return 1;

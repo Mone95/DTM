@@ -50,19 +50,34 @@ public class Command implements Comparable<Command> {
                 .getNumberOfState()) {
             return 1;
         }
-
-        for (int i = 0; i < commandChars.length; i++) {
+        if (this.inputChar < otherCommand.inputChar) {
+            return -1;
+        }
+        if (this.inputChar > otherCommand.inputChar) {
+            return 1;
+        }
+        if (this.inputHeadDirection != otherCommand.inputHeadDirection) {
+            return this.inputHeadDirection.compareDirections
+                                    (otherCommand.inputHeadDirection);
+        }
+        for (int i = 0; i < this.commandChars.length; i++) {
             if (this.commandChars[i] < otherCommand.commandChars[i]) {
                 return -1;
             }
             if (this.commandChars[i] > otherCommand.commandChars[i]) {
                 return 1;
             }
-            if (this.headDirections[i].compareTo(otherCommand.headDirections[i]) < 0) {
+        }
+
+        for (int i = 0; i < this.newChars.length; i++) {
+            if (this.newChars[i] < otherCommand.newChars[i]) {
                 return -1;
             }
-            if (this.headDirections[i].compareTo(otherCommand.headDirections[i]) > 0) {
+            if (this.newChars[i] > otherCommand.newChars[i]) {
                 return 1;
+            }
+            if (this.headDirections[i] != otherCommand.headDirections[i]) {
+                return this.headDirections[i].compareDirections(otherCommand.headDirections[i]);
             }
         }
         return 0;
@@ -76,6 +91,8 @@ public class Command implements Comparable<Command> {
         transitionString.append(this.target.getNumberOfState());
         transitionString.append(" ");
         transitionString.append(inputChar);
+        transitionString.append(" ");
+        transitionString.append(this.inputHeadDirection);
         for (char c : commandChars) {
             transitionString.append(" ");
             transitionString.append(c);
