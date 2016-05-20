@@ -26,7 +26,6 @@ public class DTM implements TuringMachine {
             states[i] = new State(i, false, false);
             }
         }
-        this.inputTape = new InputTape();
         startingState = states[startStateId];
         this.workingTapes = new WorkingTape[numberOfTapes + 1];
         for (int i = 0; i < numberOfTapes + 1; i++) {
@@ -37,7 +36,6 @@ public class DTM implements TuringMachine {
     
     private void reset() {
         this.currentState = this.startingState;
-        this.inputTape = new InputTape();
         for(WorkingTape workingTape : this.workingTapes) {
             workingTape = new WorkingTape();
         }
