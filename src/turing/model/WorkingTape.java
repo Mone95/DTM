@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class WorkingTape extends Tape {
 
+    public WorkingTape() {
+        this.positionPointer = 0;
+        this.content = new ArrayList<Character>();
+    }
+
     public WorkingTape(String content) {
         this.positionPointer = 0;
         this.content = new ArrayList<Character>();

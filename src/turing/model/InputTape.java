@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class InputTape extends Tape {
 
+    public InputTape() {
+        this.positionPointer = 0;
+        this.content = new ArrayList<Character>();
+    }
+
     public InputTape(String content) {
         this.positionPointer = 0;
         this.content = new ArrayList<Character>();

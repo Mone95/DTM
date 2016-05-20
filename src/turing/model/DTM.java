@@ -6,7 +6,8 @@ public class DTM implements TuringMachine {
     public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR + 1;
     private State startingState;
     private State[] states;
-    private Tape[] tapes;
+    private InputTape inputTape;
+    private WorkingTape[] workingTapes;
     private State currentState;
 
     
@@ -26,7 +27,13 @@ public class DTM implements TuringMachine {
             states[i] = new State(i, false, false);
             }
         }
+        this.inputTape = new InputTape();
         startingState = states[startStateId];
+        this.workingTapes = new WorkingTape[numberOfTapes + 1];
+        for (int i = 0; i < numberOfTapes + 1; i++) {
+            this.workingTapes[i] = new WorkingTape();
+        }
+        
     }
     
     public static boolean isValidTapeChar(char symbol) {
@@ -37,8 +44,7 @@ public class DTM implements TuringMachine {
     }
     
     private boolean isValidCommmand (int sourceState, char inputTapeChar,
-            char[] tapeChars, int targetState, Direction inputTapeHeadMove,
-            char[] newTapeChars, Direction[] tapeHeadMoves) {
+            char[] tapeChars, int targetState, char[] newTapeChars, Direction[] tapeHeadMoves) {
         if (sourceState < 0 || sourceState >= states.length || targetState < 0 || targetState >= states.length) {
             return false;
         }
@@ -61,7 +67,7 @@ public class DTM implements TuringMachine {
         if (!(tapeChars.length == tapeHeadMoves.length)) {
             return false;
         }
-        if(!(tapeChars.length == tapes.length)) {
+        if(!(tapeChars.length == workingTapes.length)) {
             return false;
         }
         return true;
@@ -71,7 +77,7 @@ public class DTM implements TuringMachine {
     public void addCommand(int sourceState, char inputTapeChar,
             char[] tapeChars, int targetState, Direction inputTapeHeadMove,
             char[] newTapeChars, Direction[] tapeHeadMoves) {
-        if (!this.isValidCommmand(sourceState, inputTapeChar, tapeChars, targetState, inputTapeHeadMove, newTapeChars, tapeHeadMoves)) {
+        if (!this.isValidCommmand(sourceState, inputTapeChar, tapeChars, targetState, newTapeChars, tapeHeadMoves)) {
             throw new IllegalArgumentException("Tried to add an invalid command!");
         }
         states[sourceState].addCommand(states[targetState], inputTapeChar, inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);

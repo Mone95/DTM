@@ -9,14 +9,14 @@ public class State {
     private final boolean isStopping;
     private final boolean isAccepting;
     private List<List<Command>> outgoingCommands =
-            new ArrayList<List<Command>>(DTM.ALPHABET_LENGTH);
+            new ArrayList<List<Command>>(DTM.ALPHABET_LENGTH + 1);
 
     public State(int numberOfState, boolean isStoppingState,
             boolean isAcceptingState) {
         this.numberOfState = numberOfState;
         this.isStopping = isStoppingState;
         this.isAccepting = isAcceptingState;
-        for (int i = 0; i < DTM.ALPHABET_LENGTH; i++) {
+        for (int i = 0; i < DTM.ALPHABET_LENGTH + 1; i++) {
             outgoingCommands.add(new ArrayList<Command>());
         }
     }
@@ -32,20 +32,21 @@ public class State {
     boolean isAcceptingState() {
         return this.isAccepting;
     }
+    
+    private int getPositionInList(char c) {
+        if ((c < TuringMachine.FIRST_CHAR || c > TuringMachine.LAST_CHAR) && c != TuringMachine.BLANK_CHAR) {
+            throw new IllegalArgumentException("A symbol that is not in the alphabet has been used on a tape");
+        }
+        return c == DTM.BLANK_CHAR ? DTM.ALPHABET_LENGTH : c - DTM.FIRST_CHAR;
+    }
 
     private List<Command> getCommandsOfInputSymbol(char symbol) {
-        if (symbol < TuringMachine.FIRST_CHAR
-                || symbol > TuringMachine.LAST_CHAR) {
-            throw new IllegalArgumentException(
-                    "A symbol that is not in the Alphabet has been given to "
-                            + "the Input Tape");
-        }
-        return outgoingCommands.get(symbol - TuringMachine.FIRST_CHAR);
+        return outgoingCommands.get(getPositionInList(symbol));
     }
     
     void addCommand (State target, char inputChar, Direction inputHeadDirection, char[] commandChars, char[] newChars, Direction[] directions) {
         Command newCommand = new Command(this, target, inputChar, inputHeadDirection, commandChars, newChars, directions);
-        List<Command> commandList = outgoingCommands.get(inputChar - TuringMachine.FIRST_CHAR);
+        List<Command> commandList = getCommandsOfInputSymbol(inputChar);
         if (!commandList.contains(newCommand)) {
             commandList.add(newCommand);
         }
