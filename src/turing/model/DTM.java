@@ -9,7 +9,6 @@ public class DTM implements TuringMachine {
     private InputTape inputTape;
     private WorkingTape[] workingTapes;
     private State currentState;
-
     
     public DTM(int numberOfStates, int numberOfTapes, int startStateId,
             Set<Integer> stopStateIds, Set<Integer> acceptStateIds) {
@@ -34,6 +33,14 @@ public class DTM implements TuringMachine {
             this.workingTapes[i] = new WorkingTape();
         }
         
+    }
+    
+    private void reset() {
+        this.currentState = this.startingState;
+        this.inputTape = new InputTape();
+        for(WorkingTape workingTape : this.workingTapes) {
+            workingTape = new WorkingTape();
+        }
     }
     
     public static boolean isValidTapeChar(char symbol) {
