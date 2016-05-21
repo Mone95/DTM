@@ -36,8 +36,18 @@ public class DTM implements TuringMachine {
     
     private void reset() {
         this.currentState = this.startingState;
-        for(WorkingTape workingTape : this.workingTapes) {
-            workingTape = new WorkingTape();
+        for (int i = 0; i < this.workingTapes.length; i++) {
+            this.workingTapes[i] = new WorkingTape();
+        }
+    }
+    
+    private void executeCommand (Command command) {
+        this.currentState = command.getTarget();
+        this.inputTape.turingStep(command.getInputHeadDirection());
+        char[] newTapeChars = command.getNewChars();
+        Direction[] headDirections = command.getHeadDirections();
+        for (int i = 0; i < headDirections.length; i++) {
+            this.workingTapes[i].turingStep(headDirections[i], newTapeChars[i]);
         }
     }
     
@@ -88,16 +98,34 @@ public class DTM implements TuringMachine {
         states[sourceState].addCommand(states[targetState], inputTapeChar, inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);
     }
     
+    private boolean run() {
+        char[] currentTapeChars = new char[workingTapes.length];
+        for (int i = 0; i < workingTapes.length; i++) {
+            currentTapeChars[i] = workingTapes[i].read();
+        }
+        Command command = currentState.getCommandForCurrentConfiguration(this.inputTape.read(), currentTapeChars);
+        if (command == null) {
+            return false;
+        }
+        this.executeCommand(command);
+        return true;
+    }
+    
     @Override
     public String simulate(String input) {
-        // TODO Auto-generated method stub
-        return null;
+        this.check(input);
+        return workingTapes[0].toString();
     }
 
     @Override
     public boolean check(String input) {
-        // TODO Auto-generated method stub
-        return false;
+        this.reset();
+        this.inputTape = new InputTape(input);
+        boolean hasExecutedACommand = true;
+        while (!this.currentState.isStoppingState() && hasExecutedACommand) {
+            hasExecutedACommand = this.run();
+        }
+        return this.currentState.isAcceptingState();
     }
 
     @Override

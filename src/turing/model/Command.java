@@ -1,5 +1,7 @@
 package turing.model;
 
+import java.util.Arrays;
+
 public class Command implements Comparable<Command> {
     private State source;
     private State target;
@@ -9,8 +11,9 @@ public class Command implements Comparable<Command> {
     private char[] newChars;
     private Direction[] headDirections;
 
-    public Command(State source, State target, char inputChar, Direction inputHeadDirection,
-            char[] commandChars, char[] newChars, Direction[] headDirections) {
+    public Command(State source, State target, char inputChar,
+            Direction inputHeadDirection, char[] commandChars, char[] newChars,
+            Direction[] headDirections) {
         if (newChars.length != headDirections.length) {
             throw new IllegalArgumentException("The number of characters must"
                     + "match the number of headDirections in a command!");
@@ -24,10 +27,16 @@ public class Command implements Comparable<Command> {
         this.headDirections = headDirections;
     }
 
+    private Command(State source, char inputChar, char[] commandChars) {
+        this.source = source;
+        this.inputChar = inputChar;
+        this.commandChars = commandChars;
+    }
+
     State getTarget() {
         return this.target;
     }
-    
+
     Direction getInputHeadDirection() {
         return this.inputHeadDirection;
     }
@@ -38,6 +47,11 @@ public class Command implements Comparable<Command> {
 
     Direction[] getHeadDirections() {
         return this.headDirections;
+    }
+    
+    static Command getSearchDummy(State source, char inputTapeChar,
+            char[] workingTapeChars) {
+        return new Command(source, inputTapeChar, workingTapeChars);
     }
 
     @Override
@@ -57,8 +71,8 @@ public class Command implements Comparable<Command> {
             return 1;
         }
         if (this.inputHeadDirection != otherCommand.inputHeadDirection) {
-            return this.inputHeadDirection.compareDirections
-                                    (otherCommand.inputHeadDirection);
+            return this.inputHeadDirection
+                    .compareDirections(otherCommand.inputHeadDirection);
         }
         for (int i = 0; i < this.commandChars.length; i++) {
             if (this.commandChars[i] < otherCommand.commandChars[i]) {
@@ -77,7 +91,8 @@ public class Command implements Comparable<Command> {
                 return 1;
             }
             if (this.headDirections[i] != otherCommand.headDirections[i]) {
-                return this.headDirections[i].compareDirections(otherCommand.headDirections[i]);
+                return this.headDirections[i]
+                        .compareDirections(otherCommand.headDirections[i]);
             }
         }
         return 0;
@@ -114,7 +129,7 @@ public class Command implements Comparable<Command> {
             Command otherCommand = (Command) other;
             return (this.source == otherCommand.source
                     && this.inputChar == otherCommand.inputChar
-                    && this.commandChars.equals(otherCommand.commandChars));
+                    && Arrays.equals(this.commandChars, otherCommand.commandChars));
         } else {
             return false;
         }

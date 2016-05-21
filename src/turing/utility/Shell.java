@@ -127,45 +127,7 @@ public final class Shell {
      * the supported instructions to the console.
      */
     private static void help() {
-        System.out.println("Mit diesem Programm kann ein "
-                + "nicht-deterministischer endlicher Automat mit "
-                + "Spontanübergängen erzeugt, erweitert und in "
-                + "Textform ausgegeben werden und es können diesem "
-                + "Wörter übergeben werden, welche auf Zugehörigkeit "
-                + "zur Sprache des Automaten geprüft und deren "
-                + "längster in der Sprache des Automaten enthaltener "
-                + "Präfix ausgegeben werden kann. Unterstütze " + "Befehle:");
-        System.out.println("INIT Zahl | Initialisiert einen neuen Automaten "
-                + "mit der angegebenen Zahl an Zuständen. Der Zustand "
-                + "mit der Nummer 1 ist der Startzustand, die "
-                + "Zustände werden fortlaufend nummeriert und der "
-                + "letzte Zustand ist der Endzustand.");
-        System.out.println("ADD Zahl1 Zahl2 Zeichen | Fügt einen neuen Zustand "
-                + "in den Automaten ein, der vom Zustand mit der "
-                + "Nummer Zahl1 in den Zustand mit der Nummer Zahl2 "
-                + "mit dem angegebenen Zeichen übergeht. Für "
-                + "Spontanübergänge "
-                + " benutzen. Möchte man eine bereits vorhandene Kante"
-                + " einfügen, so wird der Automat nicht verändert.");
-        System.out.println("CHECK \"Wort\" | Gibt an, ob das in "
-                + "Anführungszeichen angegebene Wort in der Sprache "
-                + "des Automaten ist.");
-        System.out.println("PREFIX \"Wort\" | Gibt das längste in der Sprache "
-                + "enthaltene Präfix des angegeben Wortes in "
-                + "Anführungszeichen zurück oder den Text 'No prefix "
-                + "in language.', falls kein Präfix des Wortes in der "
-                + "Sprache des Automaten ist.");
-        System.out.println("GENERATE | Initialisiert einen im Programm bereits "
-                + "vordefinierten Automaten. Dieser besitzt folgende"
-                + " Transitionen und die darin enthaltenen Zustände:"
-                + "\n(1, 2) a\n(1, 3) b\n(1, 4) ~\n"
-                + "(2, 2) a\n(2, 3) ~\n(2, 3) a\n(3, 4) a\n(3, 4) b\n"
-                + "(4, 5) a\n(4, 5) b");
-        System.out.println("DISPLAY | Gibt alle im aktuell geladenen Automaten "
-                + "vorhandenen Transitionen untereinander und "
-                + "lexikographisch sortiert im Format '(Startzustand, "
-                + "Endzustand) Übergangssymbol' an.");
-        System.out.println("QUIT | Beendet das Programm.");
+        System.out.println();
     }
 
     /**

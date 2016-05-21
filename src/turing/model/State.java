@@ -33,20 +33,22 @@ public class State {
         return this.isAccepting;
     }
     
-    private int getPositionInList(char c) {
+    private static int getPositionInList(char c) {
         if ((c < TuringMachine.FIRST_CHAR || c > TuringMachine.LAST_CHAR) && c != TuringMachine.BLANK_CHAR) {
             throw new IllegalArgumentException("A symbol that is not in the alphabet has been used on a tape");
         }
         return c == DTM.BLANK_CHAR ? DTM.ALPHABET_LENGTH : c - DTM.FIRST_CHAR;
     }
 
-    private List<Command> getCommandsOfInputSymbol(char symbol) {
-        return outgoingCommands.get(getPositionInList(symbol));
+    Command getCommandForCurrentConfiguration(char inputChar, char[] workingTapeChars) {
+        List<Command> listOfCommands = outgoingCommands.get(getPositionInList(inputChar));
+        int indexInList = listOfCommands.indexOf(Command.getSearchDummy(this, inputChar, workingTapeChars));
+        return indexInList == -1 ? null : listOfCommands.get(indexInList);
     }
     
     void addCommand (State target, char inputChar, Direction inputHeadDirection, char[] commandChars, char[] newChars, Direction[] directions) {
         Command newCommand = new Command(this, target, inputChar, inputHeadDirection, commandChars, newChars, directions);
-        List<Command> commandList = getCommandsOfInputSymbol(inputChar);
+        List<Command> commandList = outgoingCommands.get(State.getPositionInList(inputChar));
         if (!commandList.contains(newCommand)) {
             commandList.add(newCommand);
         }
