@@ -24,40 +24,40 @@ public final class Shell {
         throw new UnsupportedOperationException(
                 "Illegal call of utility class constructor.");
     }
-    
+
     /**
-     * Initializes a new automaton if the command was given correctly. Returns
-     * {@code true} if successful and {@code false} if it failed.
+     * Initializes a new Turing Machine if the command and the file path were 
+     * given correctly and the file format was correct. Returns {@code true} 
+     * if successful and {@code false} if it failed.
      * 
-     * @param scanner Contains the instructions by the user.
+     * @param scanner Contains the instructions of the user.
      * @return Returns whether the Initialization has worked or not.
      * @throws IOException
      */
     private static boolean readDTMFromFile(Scanner scanner) throws IOException {
         if (scanner.hasNext()) {
-            String fileName = scanner.next();
+            String filePath = scanner.next();
             if (!scanner.hasNext()) {
-                File file = new File (fileName);
+                File file = new File(filePath);
                 try {
-                    Shell.turingMachine = 
-                            TuringMachineFactory.loadFromFile(file);
+                    Shell.turingMachine = TuringMachineFactory
+                            .loadFromFile(file);
                 } catch (FileNotFoundException e) {
-                    error ("Ungültiger Dateiname oder -pfad!");
+                    error("Ungültiger Dateiname oder -pfad!");
                     return true;
                 } catch (ParseException e) {
-                    error ("Ungültiges Dateiformat!");
+                    error("Ungültiges Dateiformat!");
                     return true;
                 }
                 return false;
-            }    
+            }
         }
-        error("Falsches Parameterformat! Nach INPUT nur den Namen der Datei, "
-                + "die die Turing Maschine beschreibt, angeben!");
+        error("Falsches Parameterformat! INPUT Dateipfad erwartet!");
         return true;
     }
-    
+
     /**
-     * Writes to the console whether the command is incorrect or the checked 
+     * Writes to the console whether the command is incorrect or the checked
      * word is within the language or not.
      * 
      * @param scanner Contains the instructions given by the user
@@ -75,7 +75,7 @@ public final class Shell {
             word = scanner.next();
         }
         if (scanner.hasNext()) {
-            error ("Falsches Parameterformat! CHECK Wort erwartet!");
+            error("Falsches Parameterformat! CHECK Wort erwartet!");
             return;
         }
         if (turingMachine.check(word)) {
@@ -86,7 +86,8 @@ public final class Shell {
     }
 
     /**
-     * Writes the content of the working tape to the console.
+     * Writes the content of the working tape after checking the given word to 
+     * the console.
      * 
      * @param scanner Contains the instructions given by the user
      * @param noTuringMachine Tells whether a DTM is initialized or not.
@@ -103,14 +104,14 @@ public final class Shell {
             word = scanner.next();
         }
         if (scanner.hasNext()) {
-                error("Falsches Format! SIMULATE Wort erwartet!");
-                return;
+            error("Falsches Format! SIMULATE Wort erwartet!");
+            return;
         }
         System.out.println(turingMachine.simulate(word));
     }
 
     /**
-     * Prints a String representation of the Turing Machine on the console.
+     * Writes a textual representation of the Turing Machine to the console.
      * 
      * @param noTuringMachine Tells whether a DTM is initialized or not.
      */
@@ -123,15 +124,35 @@ public final class Shell {
     }
 
     /**
-     * Writes a text containing information about the syntax and function of 
-     * the supported instructions to the console.
+     * Writes a text containing information about the syntax and function of the
+     * supported instructions to the console.
      */
     private static void help() {
-        System.out.println();
+        System.out.println("Dieses Programm lädt die Konfiguration einer "
+                + "deterministischen Turingmaschine aus einer Datei und "
+                + "simuliert diese anschließend auf übergebenen Wörtern. Dabei "
+                + "kann wahlweise die Zugehörigkeit des Wortes zur Sprache der "
+                + "Turingmaschine oder der Inhalt des Arbeitsbandes nach "
+                + "Ausführung des letzten Schritts ausgegeben werden. Außerdem "
+                + "kann eine textuelle Repräsentation der Turingmaschine "
+                + "ausgegeben werden. Unterstützte Befehle:");
+        System.out.println("INPUT Dateipfad | Versucht, die angegebene "
+                + "Datei zu öffnen und die Konfiguration der Turingmaschine "
+                + "daraus zu lesen. Lädt die beschriebene Turingmaschine in "
+                + "das Programm, falls erfolgreich.");
+        System.out.println("CHECK Wort | Gibt aus, ob das Wort Element der "
+                + "Sprache der beschriebenen Turingmaschine ist (accept) oder "
+                + "nicht (reject).");
+        System.out.println("RUN Wort | Gibt den Inhalt des Arbeitsbands der "
+                + "Turingmaschine nach dem letzten ausgeführten Schritt aus.");
+        System.out.println("PRINT | Gibt eine textuelle Repräsentation der "
+                + "Turingmaschine aus.");
+        System.out.println("HELP | Gibt diesen Hilfetext aus.");
+        System.out.println("QUIT | Beendet das Programm.");
     }
 
     /**
-     * Checks the instructions the user gives to the Shell and calls the right 
+     * Checks the instructions the user gives to the Shell and calls the right
      * methods to execute them.
      * 
      * @param reader Reads the input from the user.
@@ -148,8 +169,8 @@ public final class Shell {
                 char instructor = command.toUpperCase().charAt(0);
                 switch (instructor) {
                 case 'I':
-                    hasNoTuringMachine = 
-                                    Shell.readDTMFromFile(instructionScanner);
+                    hasNoTuringMachine = Shell
+                            .readDTMFromFile(instructionScanner);
                     break;
                 case 'C':
                     Shell.checkWord(instructionScanner, hasNoTuringMachine);
@@ -179,12 +200,12 @@ public final class Shell {
      * Reads the instructions of the user and executes them.
      * 
      * @param args Currently unused.
-     * @throws IOException May be thrown by BufferedReader or InputStreamReader.
+     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         BufferedReader inputReader = new BufferedReader(
                 new InputStreamReader(System.in));
-        execute(inputReader);
+        Shell.execute(inputReader);
         inputReader.close();
     }
 }

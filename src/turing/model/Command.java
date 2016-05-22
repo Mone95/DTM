@@ -48,7 +48,7 @@ public class Command implements Comparable<Command> {
     Direction[] getHeadDirections() {
         return this.headDirections;
     }
-    
+
     static Command getSearchDummy(State source, char inputTapeChar,
             char[] workingTapeChars) {
         return new Command(source, inputTapeChar, workingTapeChars);
@@ -129,7 +129,8 @@ public class Command implements Comparable<Command> {
             Command otherCommand = (Command) other;
             return (this.source == otherCommand.source
                     && this.inputChar == otherCommand.inputChar
-                    && Arrays.equals(this.commandChars, otherCommand.commandChars));
+                    && Arrays.equals(this.commandChars,
+                            otherCommand.commandChars));
         } else {
             return false;
         }

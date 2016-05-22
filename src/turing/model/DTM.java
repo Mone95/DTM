@@ -3,27 +3,26 @@ package turing.model;
 import java.util.Set;
 
 public class DTM implements TuringMachine {
-    public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR - TuringMachine.FIRST_CHAR + 1;
+    public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR
+            - TuringMachine.FIRST_CHAR + 1;
     private State startingState;
     private State[] states;
     private InputTape inputTape;
     private WorkingTape[] workingTapes;
     private State currentState;
-    
+
     public DTM(int numberOfStates, int numberOfTapes, int startStateId,
             Set<Integer> stopStateIds, Set<Integer> acceptStateIds) {
         states = new State[numberOfStates];
         for (int i = 0; i < numberOfStates; i++) {
             if (stopStateIds.contains(new Integer(i))) {
                 if (acceptStateIds.contains(new Integer(i))) {
-                    states[i] = new State (i, true, true);
+                    states[i] = new State(i, true, true);
+                } else {
+                    states[i] = new State(i, true, false);
                 }
-                else {
-                    states[i] = new State (i, true, false);
-                }
-            }
-            else {
-            states[i] = new State(i, false, false);
+            } else {
+                states[i] = new State(i, false, false);
             }
         }
         startingState = states[startStateId];
@@ -31,17 +30,17 @@ public class DTM implements TuringMachine {
         for (int i = 0; i < numberOfTapes + 1; i++) {
             this.workingTapes[i] = new WorkingTape();
         }
-        
+
     }
-    
+
     private void reset() {
         this.currentState = this.startingState;
         for (int i = 0; i < this.workingTapes.length; i++) {
             this.workingTapes[i] = new WorkingTape();
         }
     }
-    
-    private void executeCommand (Command command) {
+
+    private void executeCommand(Command command) {
         this.currentState = command.getTarget();
         this.inputTape.turingStep(command.getInputHeadDirection());
         char[] newTapeChars = command.getNewChars();
@@ -50,17 +49,21 @@ public class DTM implements TuringMachine {
             this.workingTapes[i].turingStep(headDirections[i], newTapeChars[i]);
         }
     }
-    
+
     public static boolean isValidTapeChar(char symbol) {
-        if (symbol >= TuringMachine.FIRST_CHAR && symbol <= TuringMachine.LAST_CHAR || symbol == TuringMachine.BLANK_CHAR) {
+        if (symbol >= TuringMachine.FIRST_CHAR
+                && symbol <= TuringMachine.LAST_CHAR
+                || symbol == TuringMachine.BLANK_CHAR) {
             return true;
         }
         return false;
     }
-    
-    private boolean isValidCommmand (int sourceState, char inputTapeChar,
-            char[] tapeChars, int targetState, char[] newTapeChars, Direction[] tapeHeadMoves) {
-        if (sourceState < 0 || sourceState >= states.length || targetState < 0 || targetState >= states.length) {
+
+    private boolean isValidCommmand(int sourceState, char inputTapeChar,
+            char[] tapeChars, int targetState, char[] newTapeChars,
+            Direction[] tapeHeadMoves) {
+        if (sourceState < 0 || sourceState >= states.length || targetState < 0
+                || targetState >= states.length) {
             return false;
         }
         if (!DTM.isValidTapeChar(inputTapeChar)) {
@@ -72,7 +75,7 @@ public class DTM implements TuringMachine {
             }
         }
         for (char newTapeChar : newTapeChars) {
-            if(!DTM.isValidTapeChar(newTapeChar)) {
+            if (!DTM.isValidTapeChar(newTapeChar)) {
                 return false;
             }
         }
@@ -82,35 +85,39 @@ public class DTM implements TuringMachine {
         if (!(tapeChars.length == tapeHeadMoves.length)) {
             return false;
         }
-        if(!(tapeChars.length == workingTapes.length)) {
+        if (!(tapeChars.length == workingTapes.length)) {
             return false;
         }
         return true;
     }
-    
+
     @Override
     public void addCommand(int sourceState, char inputTapeChar,
             char[] tapeChars, int targetState, Direction inputTapeHeadMove,
             char[] newTapeChars, Direction[] tapeHeadMoves) {
-        if (!this.isValidCommmand(sourceState, inputTapeChar, tapeChars, targetState, newTapeChars, tapeHeadMoves)) {
-            throw new IllegalArgumentException("Tried to add an invalid command!");
+        if (!this.isValidCommmand(sourceState, inputTapeChar, tapeChars,
+                targetState, newTapeChars, tapeHeadMoves)) {
+            throw new IllegalArgumentException(
+                    "Tried to add an invalid command!");
         }
-        states[sourceState].addCommand(states[targetState], inputTapeChar, inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);
+        states[sourceState].addCommand(states[targetState], inputTapeChar,
+                inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);
     }
-    
+
     private boolean run() {
         char[] currentTapeChars = new char[workingTapes.length];
         for (int i = 0; i < workingTapes.length; i++) {
             currentTapeChars[i] = workingTapes[i].read();
         }
-        Command command = currentState.getCommandForCurrentConfiguration(this.inputTape.read(), currentTapeChars);
+        Command command = currentState.getCommandForCurrentConfiguration(
+                this.inputTape.read(), currentTapeChars);
         if (command == null) {
             return false;
         }
         this.executeCommand(command);
         return true;
     }
-    
+
     @Override
     public String simulate(String input) {
         this.check(input);
