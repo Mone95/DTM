@@ -101,23 +101,25 @@ public class Command implements Comparable<Command> {
     @Override
     public String toString() {
         StringBuilder transitionString = new StringBuilder();
+        transitionString.append('(');
         transitionString.append(this.source.getNumberOfState());
-        transitionString.append(" ");
-        transitionString.append(this.target.getNumberOfState());
-        transitionString.append(" ");
+        transitionString.append(", ");
         transitionString.append(inputChar);
-        transitionString.append(" ");
-        transitionString.append(this.inputHeadDirection);
         for (char c : commandChars) {
-            transitionString.append(" ");
+            transitionString.append(", ");
             transitionString.append(c);
         }
+        transitionString.append(") -> (");
+        transitionString.append(this.target.getNumberOfState());
+        transitionString.append(",");
+        transitionString.append(this.inputHeadDirection);
         for (int i = 0; i < this.newChars.length; i++) {
-            transitionString.append(" ");
+            transitionString.append(",");
             transitionString.append(this.commandChars[i]);
-            transitionString.append(" ");
+            transitionString.append(",");
             transitionString.append(this.headDirections[i]);
         }
+        transitionString.append(')');
         return transitionString.toString();
     }
 
