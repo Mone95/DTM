@@ -56,23 +56,11 @@ public class Command implements Comparable<Command> {
 
     @Override
     public int compareTo(Command otherCommand) {
-        if (this.target.getNumberOfState() < otherCommand.source
-                .getNumberOfState()) {
-            return -1;
-        }
-        if (this.target.getNumberOfState() > otherCommand.source
-                .getNumberOfState()) {
-            return 1;
-        }
         if (this.inputChar < otherCommand.inputChar) {
             return -1;
         }
         if (this.inputChar > otherCommand.inputChar) {
             return 1;
-        }
-        if (this.inputHeadDirection != otherCommand.inputHeadDirection) {
-            return this.inputHeadDirection
-                    .compareDirections(otherCommand.inputHeadDirection);
         }
         for (int i = 0; i < this.commandChars.length; i++) {
             if (this.commandChars[i] < otherCommand.commandChars[i]) {
@@ -82,7 +70,18 @@ public class Command implements Comparable<Command> {
                 return 1;
             }
         }
-
+        if (this.target.getNumberOfState() < otherCommand.source
+                .getNumberOfState()) {
+            return -1;
+        }
+        if (this.target.getNumberOfState() > otherCommand.source
+                .getNumberOfState()) {
+            return 1;
+        }
+        if (this.inputHeadDirection != otherCommand.inputHeadDirection) {
+            return this.inputHeadDirection
+                    .compareDirections(otherCommand.inputHeadDirection);
+        }
         for (int i = 0; i < this.newChars.length; i++) {
             if (this.newChars[i] < otherCommand.newChars[i]) {
                 return -1;
@@ -111,12 +110,12 @@ public class Command implements Comparable<Command> {
         }
         transitionString.append(") -> (");
         transitionString.append(this.target.getNumberOfState());
-        transitionString.append(",");
+        transitionString.append(", ");
         transitionString.append(this.inputHeadDirection);
         for (int i = 0; i < this.newChars.length; i++) {
-            transitionString.append(",");
-            transitionString.append(this.commandChars[i]);
-            transitionString.append(",");
+            transitionString.append(", ");
+            transitionString.append(this.newChars[i]);
+            transitionString.append(", ");
             transitionString.append(this.headDirections[i]);
         }
         transitionString.append(')');
