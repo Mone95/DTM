@@ -10,6 +10,9 @@ import java.util.Scanner;
 
 import turing.model.TuringMachine;
 
+/**
+ * The interface between user and Turing Machine, based on text commands.
+ */
 public final class Shell {
     /**
      * The Turing Machine the Shell currently works with.
@@ -117,7 +120,7 @@ public final class Shell {
      */
     private static void printTuringMachine(boolean noTuringMachine) {
         if (noTuringMachine) {
-            error("Es wurde noch keine Turing Maschine initialisiert!");
+            error("Es wurde noch keine Turingmaschine initialisiert!");
         } else {
             System.out.print(Shell.turingMachine);
         }

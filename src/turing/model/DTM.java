@@ -2,7 +2,15 @@ package turing.model;
 
 import java.util.Set;
 
+/**
+ * A class representing a deterministic Turing Machine and serving as an adapter
+ * to its States and Commands
+ */
 public class DTM implements TuringMachine {
+    
+    /**
+     * The length of the alphabet of the working tapes.
+     */
     public static final int ALPHABET_LENGTH = TuringMachine.LAST_CHAR
             - TuringMachine.FIRST_CHAR + 1;
     private State startingState;
@@ -11,6 +19,19 @@ public class DTM implements TuringMachine {
     private WorkingTape[] workingTapes;
     private State currentState;
 
+    /**
+     * Creates a new deterministic Turing Machine with {@code numberOfStates}
+     * states, an input and an output tape, {@code numberOfTapes} working tapes,
+     * the starting state given by {@code startStateId}, the stopping states 
+     * given by {@code stopStateIds} and the accepting state given by 
+     * {@code acceptStateIds}
+     * 
+     * @param numberOfStates The number of states the Turing Machine shall have.
+     * @param numberOfTapes The number of tapes the Turing Machine shall have.
+     * @param startStateId The number of the state from which should be started.
+     * @param stopStateIds The states in which the Turing Machine should stop.
+     * @param acceptStateIds The accepting states of the Turing Machine.
+     */
     public DTM(int numberOfStates, int numberOfTapes, int startStateId,
             Set<Integer> stopStateIds, Set<Integer> acceptStateIds) {
         states = new State[numberOfStates];
@@ -40,6 +61,12 @@ public class DTM implements TuringMachine {
         }
     }
 
+    /**
+     * Executes the given command by updating the configuration of the Turing 
+     * Machine.
+     * 
+     * @param command The command to be executed.
+     */
     private void executeCommand(Command command) {
         this.currentState = command.getTarget();
         this.inputTape.turingStep(command.getInputHeadDirection());
@@ -50,6 +77,14 @@ public class DTM implements TuringMachine {
         }
     }
 
+    /**
+     * Checks whether a letter is within the alphabet of the Turing Machine or 
+     * not. Returns {@code true} if the letter is element of the alphabet and
+     * {@code false} if not.
+     * 
+     * @param symbol The letter to be checked.
+     * @return Returns whether the letter belongs to the tapes' alphabet or not.
+     */
     public static boolean isValidTapeChar(char symbol) {
         if (symbol >= TuringMachine.FIRST_CHAR
                 && symbol <= TuringMachine.LAST_CHAR
@@ -59,6 +94,17 @@ public class DTM implements TuringMachine {
         return false;
     }
 
+    /**
+     * Returns {@code true} if the command specified by the arguments is
+     * compatible with this Turing Machine and {@code false} if not.
+     * @param sourceState The state in which this command can be called
+     * @param inputTapeChar The letter written on the input tape.
+     * @param tapeChars The letters currently on the working tapes.
+     * @param targetState The state the command goes to.
+     * @param newTapeChars The letters that are written on the tapes.
+     * @param tapeHeadMoves The directions to move the heads.
+     * @return Whether the command is compatible with this DTM or not.
+     */
     private boolean isValidCommmand(int sourceState, char inputTapeChar,
             char[] tapeChars, int targetState, char[] newTapeChars,
             Direction[] tapeHeadMoves) {
@@ -91,6 +137,9 @@ public class DTM implements TuringMachine {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addCommand(int sourceState, char inputTapeChar,
             char[] tapeChars, int targetState, Direction inputTapeHeadMove,
@@ -104,6 +153,13 @@ public class DTM implements TuringMachine {
                 inputTapeHeadMove, tapeChars, newTapeChars, tapeHeadMoves);
     }
 
+    /**
+     * Checks whether a command for the current configuration is present and
+     * executes it if there is one. Returns {@code true} if a command has been
+     * executed and {@code false} if not.
+     * 
+     * @return whether a command has been executed or not.
+     */
     private boolean run() {
         char[] currentTapeChars = new char[workingTapes.length];
         for (int i = 0; i < workingTapes.length; i++) {
@@ -118,12 +174,9 @@ public class DTM implements TuringMachine {
         return true;
     }
 
-    @Override
-    public String simulate(String input) {
-        this.check(input);
-        return workingTapes[0].toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean check(String input) {
         this.reset();
@@ -134,7 +187,19 @@ public class DTM implements TuringMachine {
         }
         return this.currentState.isAcceptingState();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String simulate(String input) {
+        this.check(input);
+        return workingTapes[0].toString();
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         StringBuilder DTMAsText = new StringBuilder();

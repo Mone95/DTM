@@ -2,6 +2,9 @@ package turing.model;
 
 import java.util.Arrays;
 
+/**
+ * A data bean for the commands of the Turing Machine.
+ */
 public class Command implements Comparable<Command> {
     private State source;
     private State target;
@@ -11,6 +14,22 @@ public class Command implements Comparable<Command> {
     private char[] newChars;
     private Direction[] headDirections;
 
+    /**
+     * Creates a new command with source {@code source}, target {@code target},
+     * input tape char {@code inputChar}, direction to move the input tape 
+     * {@code inputHeadDirection}, current chars on the working tapes 
+     * {@code commandChars}, letters to be written on the working tapes 
+     * {@code newChars} and directions to move the heads of the working tapes
+     * {@code headDirections}.
+     * 
+     * @param source
+     * @param target
+     * @param inputChar
+     * @param inputHeadDirection
+     * @param commandChars
+     * @param newChars
+     * @param headDirections
+     */
     public Command(State source, State target, char inputChar,
             Direction inputHeadDirection, char[] commandChars, char[] newChars,
             Direction[] headDirections) {
@@ -27,24 +46,51 @@ public class Command implements Comparable<Command> {
         this.headDirections = headDirections;
     }
 
+    /**
+     * Creates a new command dummy for the configuration determined by the 
+     * arguments without any transitions.
+
+     * @param source The source of the command.
+     * @param inputChar The letter on the input tape.
+     * @param commandChars The letters on the working tapes.
+     */
     private Command(State source, char inputChar, char[] commandChars) {
         this.source = source;
         this.inputChar = inputChar;
         this.commandChars = commandChars;
     }
-
+    
+    /**
+     * Returns the target of the command.
+     * 
+     * @return the target of the command.
+     */
     State getTarget() {
         return this.target;
     }
 
+    /**
+     * Returns the direction the input tape head has to be moved to.
+     * 
+     * @return the direction the input tape has to be moved to.
+     */
     Direction getInputHeadDirection() {
         return this.inputHeadDirection;
     }
 
+    /**
+     * Returns the letters to be written to the working tapes.
+     * 
+     * @return the letters to be written to the working tapes.
+     */
     char[] getNewChars() {
         return this.newChars;
     }
 
+    /**
+     * Returns the directions to move the heads of the working tapes to.
+     * @return the directions to move the heads of the working tapes to.
+     */
     Direction[] getHeadDirections() {
         return this.headDirections;
     }
