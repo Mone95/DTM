@@ -203,7 +203,7 @@ public final class Shell {
      * Reads the instructions of the user and executes them.
      * 
      * @param args Currently unused.
-     * @throws IOException
+     * @throws IOException if a problem with a file or a Reader occurs.
      */
     public static void main(String[] args) throws IOException {
         BufferedReader inputReader = new BufferedReader(

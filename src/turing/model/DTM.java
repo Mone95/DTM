@@ -202,10 +202,10 @@ public class DTM implements TuringMachine {
      */
     @Override
     public String toString() {
-        StringBuilder DTMAsText = new StringBuilder();
+        StringBuilder dtmAsText = new StringBuilder();
         for (State state : states) {
-            DTMAsText.append(state);
+            dtmAsText.append(state);
         }
-        return DTMAsText.toString();
+        return dtmAsText.toString();
     }
 }

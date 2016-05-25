@@ -19,9 +19,9 @@ public class State {
      * state if {@code ISSTOPPINGState} is {@code true} and an accepting state
      * if additionally {@code ISACCEPTINGState} is {@code true}.
      * 
-     * @param NUMBEROFSTATE The ID the state will have.
-     * @param ISSTOPPINGState Determines whether the state is stopping or not.
-     * @param ISACCEPTINGState Determines whether the state is accepting or not.
+     * @param numberOfState The ID the state will have.
+     * @param isStoppingState Determines whether the state is stopping or not.
+     * @param isAcceptingState Determines whether the state is accepting or not.
      */
     public State(int numberOfState, boolean isStoppingState,
             boolean isAcceptingState) {
@@ -53,7 +53,7 @@ public class State {
     }
 
     /**
-     * Returns {@code true} if the state is an accepting state and {@code false} 
+     * Returns {@code true} if the state is an accepting state and {@code false}
      * if not.
      * 
      * @return whether the state is an accepting state or not.

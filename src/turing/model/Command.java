@@ -22,13 +22,13 @@ public class Command implements Comparable<Command> {
      * {@code newChars} and directions to move the heads of the working tapes
      * {@code headDirections}.
      * 
-     * @param source
-     * @param target
-     * @param inputChar
-     * @param inputHeadDirection
-     * @param commandChars
-     * @param newChars
-     * @param headDirections
+     * @param source The number of the source state.
+     * @param target The number of the target state.
+     * @param inputChar The letter expected on the input tape.
+     * @param inputHeadDirection The direction to move the head to.
+     * @param commandChars The letters on the working tapes.
+     * @param newChars The letters to be written onto the working tapes.
+     * @param headDirections The direction to move the heads to.
      */
     public Command(State source, State target, char inputChar,
             Direction inputHeadDirection, char[] commandChars, char[] newChars,
@@ -113,10 +113,10 @@ public class Command implements Comparable<Command> {
     /**
      * Compares two commands by lexicographical order, based on the following 
      * order of attributes: {@code inputChar}, {@code commandChars}, the number
-     * of its target state, {@code inputHeadDirection}, {@code newChars} and {@code headDirections}. 
-     * Returns {@code -1} if {@code this} is less than {@code otherCommand},
-     * {@code 0} if they are equal and {@code 1} if {@code} this is greater than
-     * {@code otherCommand}.
+     * of its target state, {@code inputHeadDirection}, {@code newChars} and 
+     * {@code headDirections}. Returns {@code -1} if {@code this} is less than
+     * {@code otherCommand}, {@code 0} if they are equal and {@code 1} if 
+     * {@code this} is greater than {@code otherCommand}.
      * 
      * @param otherCommand The command this one is compared to.
      * @return whether the other command is less, equal to or greater than this.

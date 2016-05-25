@@ -1,7 +1,24 @@
 package turing.model;
 
+/**
+ * An enum to represent the directions the heads of the tapes might move into
+ * and compare them to each other.
+ */
 public enum Direction {
-    LEFT, NOMOVE, RIGHT;
+    /**
+     * Decrease the position of the head.
+     */
+    LEFT,
+    
+    /**
+     * Do not change the position of the head.
+     */
+    NOMOVE,
+    
+    /**
+     * Increase the position of the head.
+     */
+    RIGHT;
     
     /**
      * Compares two directions by using the following order: {@code LEFT} < 

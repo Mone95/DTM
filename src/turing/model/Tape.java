@@ -20,7 +20,7 @@ public class Tape {
     /**
      * Removes every blank char that comes before any letter on the tape.
      */
-    private void removeBlanksAtBeginning () {
+    private void removeBlanksAtBeginning() {
         int numberOfBlanksAtBeginning = 0;
         for (Character symbol : this.content) {
             if (symbol == TuringMachine.BLANK_CHAR) {
@@ -37,7 +37,7 @@ public class Tape {
     /**
      * Removes any blank that comes after the last letter on the tape.
      */
-    private void removeBlanksAtEnd () {
+    private void removeBlanksAtEnd() {
         int numberOfBlanksAtEnd = 0;
         for (int i = content.size() - 1; i >= 0; i--) {
             if (this.content.get(i) == TuringMachine.BLANK_CHAR) {
@@ -72,13 +72,11 @@ public class Tape {
      */
     protected void write(char symbol) {
         if (this.positionPointer < 0) {
-            this.content.add(0,symbol);
+            this.content.add(0, symbol);
             this.positionPointer = 0;
-        }
-        else if (this.positionPointer >= this.content.size()) {
+        } else if (this.positionPointer >= this.content.size()) {
             this.content.add(symbol);
-        }
-        else {
+        } else {
             this.content.set(this.positionPointer, symbol);
         }
     }
@@ -110,10 +108,10 @@ public class Tape {
     public String toString() {
         this.removeBlanksAtBeginning();
         this.removeBlanksAtEnd();
-        StringBuilder TapeContent = new StringBuilder("");
+        StringBuilder tapeContent = new StringBuilder("");
         for (Character symbol : content) {
-            TapeContent.append(symbol);
+            tapeContent.append(symbol);
         }
-        return TapeContent.toString();
+        return tapeContent.toString();
     }
 }
