@@ -95,11 +95,32 @@ public class Command implements Comparable<Command> {
         return this.headDirections;
     }
 
+    /**
+     * Creates a command that only has a source state and knows the letters 
+     * expected on the input and the working tapes. Used for searching lists of
+     * commands and cannot be executed.
+     * 
+     * @param source The source state of the command.
+     * @param inputTapeChar The letter currently on the input tape.
+     * @param workingTapeChars The letters currently on the working tapes.
+     * @return A command that can be used for searching for one command.
+     */
     static Command getSearchDummy(State source, char inputTapeChar,
             char[] workingTapeChars) {
         return new Command(source, inputTapeChar, workingTapeChars);
     }
 
+    /**
+     * Compares two commands by lexicographical order, based on the following 
+     * order of attributes: {@code inputChar}, {@code commandChars}, the number
+     * of its target state, {@code inputHeadDirection}, {@code newChars} and {@code headDirections}. 
+     * Returns {@code -1} if {@code this} is less than {@code otherCommand},
+     * {@code 0} if they are equal and {@code 1} if {@code} this is greater than
+     * {@code otherCommand}.
+     * 
+     * @param otherCommand The command this one is compared to.
+     * @return whether the other command is less, equal to or greater than this.
+     */
     @Override
     public int compareTo(Command otherCommand) {
         if (this.inputChar < otherCommand.inputChar) {
@@ -143,6 +164,17 @@ public class Command implements Comparable<Command> {
         return 0;
     }
 
+    /**
+     * Returns a textual representation of the command in the form of:
+     * (number of source state, input tape char, letter on the first working 
+     * tape, letter on the second working tape, ...) -> (number of the target
+     * state, direction to move the head on the input tape, letter to be written
+     * on the first working tape, direction to move the head on the first
+     * working tape, letter to be written on the second working tape, direction
+     * to move the head on the second working tape, ...)
+     * 
+     * @return a String representation of the command.
+     */
     @Override
     public String toString() {
         StringBuilder transitionString = new StringBuilder();
@@ -168,6 +200,15 @@ public class Command implements Comparable<Command> {
         return transitionString.toString();
     }
 
+    /**
+     * Returns whether a given object is equal to {@code this}. If {@code other}
+     * is a command, this is ensured if at least the source states, the input
+     * tape chars and the chars expected on the working tapes are the same.
+     * Returns {@code true} if {@code this} is equal to {@code other} and 
+     * {@code false} otherwise.
+     * 
+     * @return whether this and other a equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -183,6 +224,9 @@ public class Command implements Comparable<Command> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         StringBuilder b = new StringBuilder(this.source.toString());
